@@ -13,12 +13,26 @@
     system.stateVersion = "16.09";
     time.timeZone = "America/Chicago";
 
-    # Use the systemd-boot EFI boot loader.
     boot.loader =
     {
-        systemd-boot.enable = true;
+        systemd-boot.enable = false;
         efi.canTouchEfiVariables = true;
-        grub.device = /dev/sdc2;
+        grub =
+        {
+            enable = true;
+            version = 2;
+            device = /dev/sdc2;
+            extraEntries = ''
+            menuentry 'Windows1'
+                insmod part_gpt
+                insmod fat
+                insmod search_fs_uuid
+                insmod chain
+                search fs-uuid --set=root 6044-BEC0 --hint-bios=hd0,gpt2 --hint-efi=hd0,gpt2 --hint-baremetal=ahci0,gpt2
+
+            ''
+
+        };
     };
 
     networking =
